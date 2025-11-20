@@ -98,6 +98,33 @@ export default function CasinoTracker() {
   const currentTotal =
     chartData.length > 0 ? chartData[chartData.length - 1].runningTotal : 0;
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
+        <div className="bg-gray-800 p-8 rounded-lg shadow-xl">
+          <h1 className="text-3xl font-bold text-white mb-4">Casino Tracker</h1>
+          <p className="text-gray-300 mb-6">
+            Sign in to track your casino earnings
+          </p>
+          <button
+            onClick={() => setUser({ email: "demo@example.com" })}
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
+          >
+            Sign in with Google (Demo)
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="App">
       <header className="App-header">
