@@ -1,7 +1,14 @@
-import logo from './logo.svg';
-import './App.css';
-
-function App() {
+import React, { useState, useEffect } from "react";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
   return (
     <div className="App">
       <header className="App-header">
