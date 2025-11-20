@@ -338,5 +338,3 @@ export default function CasinoTracker() {
     </div>
   );
 }
-
-export default App;
