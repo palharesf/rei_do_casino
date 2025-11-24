@@ -172,11 +172,14 @@ const chartData = (() => {
             Sign in to track your casino earnings
           </p>
           <button
-            onClick={() => setUser({ email: "demo@example.com" })}
+            onClick={handleSignIn}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
           >
-            Sign in with Google (Demo)
+            Sign in with Google
           </button>
+          {error && (
+            <p className="text-red-400 text-sm mt-4 text-center">{error}</p>
+          )}
         </div>
       </div>
     );
@@ -191,7 +194,7 @@ const chartData = (() => {
           <div className="text-right">
             <div className="text-sm text-gray-400">{user.email}</div>
             <button
-              onClick={() => setUser(null)}
+              onClick={handleSignOut}
               className="text-sm text-blue-400 hover:text-blue-300"
             >
               Sign out
