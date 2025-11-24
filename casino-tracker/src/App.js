@@ -30,38 +30,64 @@ export default function CasinoTracker() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // Simulate Firebase initialization
+  // Initialize Firebase authentication listener
   useEffect(() => {
-    // In real app: initialize Firebase here
-    // For demo: simulate logged in user
-    setTimeout(() => {
-      setUser({ email: "demo@example.com" });
-      loadEntries();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
       setLoading(false);
-    }, 500);
+    });
+
+    return () => unsubscribe();
   }, []);
 
-  // Load entries from Firebase (simulated)
-  const loadEntries = async () => {
-    // In real app: fetch from Firebase
-    // For demo: load from localStorage
-    const stored = localStorage.getItem("casinoEntries");
-    if (stored) {
-      setEntries(JSON.parse(stored));
+  // Load entries from Firestore when user logs in
+  useEffect(() => {
+    if (!user) {
+      setEntries([]);
+      return;
+    }
+
+    // Real-time listener for user's entries
+    const q = query(
+      collection(db, "entries"),
+      where("userId", "==", user.uid),
+      orderBy("timestamp", "asc")
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const entriesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setEntries(entriesData);
+    });
+
+    return () => unsubscribe(); // Cleanup listener
+  }, [user]);
+
+  // Google Sign In
+  const handleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Sign in error:", error);
+      setError("Failed to sign in. Please try again.");
     }
   };
 
-  // Save entries to Firebase (simulated)
-  const saveEntries = (newEntries) => {
-    // In real app: save to Firebase
-    // For demo: save to localStorage
-    localStorage.setItem("casinoEntries", JSON.stringify(newEntries));
-    setEntries(newEntries);
+  // Sign Out
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
   };
 
-  const handleSubmit = (e) => {
+  // Add entry to Firestore
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(""); // Clear any previous errors
+    setError("");
 
     if (!amount || isNaN(amount)) {
       setError("Please enter a valid amount");
@@ -73,23 +99,29 @@ export default function CasinoTracker() {
       return;
     }
 
-    const newEntry = {
-      id: Date.now(),
-      date,
-      amount: parseFloat(amount),
-      timestamp: new Date(date).getTime(),
-    };
-
-    const updated = [...entries, newEntry].sort(
-      (a, b) => a.timestamp - b.timestamp
-    );
-    saveEntries(updated);
-    setAmount("");
+    try {
+      await addDoc(collection(db, "entries"), {
+        userId: user.uid,
+        date,
+        amount: parseFloat(amount),
+        timestamp: new Date(date).getTime(),
+        createdAt: new Date(),
+      });
+      setAmount(""); // Clear input
+    } catch (error) {
+      console.error("Error adding entry:", error);
+      setError("Failed to add entry. Please try again.");
+    }
   };
 
-  const handleDelete = (id) => {
-    const updated = entries.filter((e) => e.id !== id);
-    saveEntries(updated);
+  // Delete entry from Firestore
+  const handleDelete = async (id) => {
+    try {
+      await deleteDoc(doc(db, "entries", id));
+    } catch (error) {
+      console.error("Error deleting entry:", error);
+      setError("Failed to delete entry. Please try again.");
+    }
   };
 
   // Calculate running total for graph
