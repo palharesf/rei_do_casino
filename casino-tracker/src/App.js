@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { auth, googleProvider, db } from "./firebase";
+import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import {
   LineChart,
   Line,
@@ -9,6 +11,16 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
+  onSnapshot,
+  orderBy,
+} from "firebase/firestore";
 
 export default function CasinoTracker() {
   const [entries, setEntries] = useState([]);
