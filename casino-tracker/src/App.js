@@ -125,19 +125,32 @@ export default function CasinoTracker() {
   };
 
   // Calculate running total for graph
-  const chartData = entries.reduce((acc, entry) => {
-    const runningTotal =
-      acc.length > 0
-        ? acc[acc.length - 1].runningTotal + entry.amount
-        : entry.amount;
+const chartData = (() => {
+  // First, group entries by date and sum amounts
+  const dailyTotals = {};
 
-    acc.push({
-      date: entry.date,
-      amount: entry.amount,
-      runningTotal: runningTotal,
-    });
-    return acc;
-  }, []);
+  entries.forEach((entry) => {
+    if (dailyTotals[entry.date]) {
+      dailyTotals[entry.date] += entry.amount;
+    } else {
+      dailyTotals[entry.date] = entry.amount;
+    }
+  });
+
+  // Convert to array and sort by date
+  const sortedDates = Object.keys(dailyTotals).sort();
+
+  // Calculate running totals
+  let runningTotal = 0;
+  return sortedDates.map((date) => {
+    runningTotal += dailyTotals[date];
+    return {
+      date,
+      amount: dailyTotals[date],
+      runningTotal,
+    };
+  });
+})();
 
   const currentTotal =
     chartData.length > 0 ? chartData[chartData.length - 1].runningTotal : 0;
