@@ -71,7 +71,14 @@ export default function CasinoTracker() {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Sign in error:", error);
-      setError("Failed to sign in. Please try again.");
+
+      if (error.code === "auth/web-storage-unsupported") {
+        setError(
+          "Your browser doesn't support authentication. Please try a different browser or enable cookies/storage."
+        );
+      } else {
+        setError("Failed to sign in. Please try again.");
+      }
     }
   };
 
