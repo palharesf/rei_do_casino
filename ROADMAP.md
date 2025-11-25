@@ -1,0 +1,2 @@
+- Colored graphs
+- Localization options
