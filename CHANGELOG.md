@@ -26,6 +26,10 @@ The format aims to be simple and follow semantic versioning.
 
 ---
 
+## [1.0.1] - 2025-11-25
+### Fixed
+- Fix Firebase auth persistence issue
+
 ## [1.0.0] - 2025-11-24
 ### Added
 - Finished project, including Firebase authentication and database
