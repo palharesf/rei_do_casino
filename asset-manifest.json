@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/rei_do_casino/static/css/main.471eff58.css",
+    "main.js": "/rei_do_casino/static/js/main.f5f05833.js",
+    "static/js/453.df0e52cd.chunk.js": "/rei_do_casino/static/js/453.df0e52cd.chunk.js",
+    "index.html": "/rei_do_casino/index.html",
+    "main.471eff58.css.map": "/rei_do_casino/static/css/main.471eff58.css.map",
+    "main.f5f05833.js.map": "/rei_do_casino/static/js/main.f5f05833.js.map",
+    "453.df0e52cd.chunk.js.map": "/rei_do_casino/static/js/453.df0e52cd.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.471eff58.css",
+    "static/js/main.f5f05833.js"
+  ]
+}
