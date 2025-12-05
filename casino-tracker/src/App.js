@@ -326,7 +326,36 @@ const chartData = (() => {
                       stroke="#3B82F6"
                       strokeWidth={3}
                       name="Running Total"
-                      dot={{ fill: "#3B82F6", r: 4 }}
+                      dot={(props) => {
+                        const { cx, cy, payload } = props;
+                        const color =
+                          payload.runningTotal >= 0 ? "#10B981" : "#EF4444";
+                        return (
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={5}
+                            fill={color}
+                            stroke={color}
+                            strokeWidth={2}
+                          />
+                        );
+                      }}
+                      activeDot={(props) => {
+                        const { cx, cy, payload } = props;
+                        const color =
+                          payload.runningTotal >= 0 ? "#10B981" : "#EF4444";
+                        return (
+                          <circle
+                            cx={cx}
+                            cy={cy}
+                            r={7}
+                            fill={color}
+                            stroke="#FFFFFF"
+                            strokeWidth={2}
+                          />
+                        );
+                      }}
                     />
                   </LineChart>
                 </ResponsiveContainer>
