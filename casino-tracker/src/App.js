@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { auth, googleProvider, db } from "./firebase";
 import { signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import {
-  LineChart,
+  AreaChart,
+  Area,
   Line,
   XAxis,
   YAxis,
@@ -156,6 +157,9 @@ const chartData = (() => {
       date,
       amount: dailyTotals[date],
       runningTotal,
+      // Add these for the area chart:
+      positiveArea: runningTotal > 0 ? runningTotal : 0,
+      negativeArea: runningTotal < 0 ? runningTotal : 0,
     };
   });
 })();
@@ -287,7 +291,7 @@ const chartData = (() => {
               <h2 className="text-2xl font-bold mb-6">Earnings Over Time</h2>
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="90%">
-                  <LineChart data={chartData}>
+                  <AreaChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis
                       dataKey="date"
@@ -323,11 +327,40 @@ const chartData = (() => {
                       labelFormatter={(label) => `Date: ${label}`}
                     />
                     <Legend wrapperStyle={{ color: "#9CA3AF" }} />
+
+                    {/* Red area for negative values */}
+                    <Area
+                      type="monotone"
+                      dataKey="negativeArea" // We'll need to transform data
+                      stroke="#ef4444"
+                      fill="#ef4444"
+                      fillOpacity={0.6}
+                      strokeWidth={0}
+                      connectNulls={true}
+                      name="Below Zero"
+                      isAnimationActive={false}
+                    />
+
+                    {/* Green area for positive values */}
+                    <Area
+                      type="monotone"
+                      dataKey="positiveArea" // We'll need to transform data
+                      stroke="#10B981"
+                      fill="#10B981"
+                      fillOpacity={0.6}
+                      strokeWidth={0}
+                      connectNulls={true}
+                      name="Above Zero"
+                      isAnimationActive={false}
+                    />
+
+                    {/* Add a line on top to show the actual running total */}
+                    {/* For the dots, they are green if dailyTotal is positive, red if negative */}
                     <Line
                       type="monotone"
                       dataKey="runningTotal"
                       stroke="#3B82F6"
-                      strokeWidth={3}
+                      strokeWidth={2}
                       name="Running Total"
                       dot={(props) => {
                         const { cx, cy, payload } = props;
@@ -337,30 +370,15 @@ const chartData = (() => {
                           <circle
                             cx={cx}
                             cy={cy}
-                            r={5}
+                            r={4}
                             fill={color}
                             stroke={color}
                             strokeWidth={2}
                           />
                         );
                       }}
-                      activeDot={(props) => {
-                        const { cx, cy, payload } = props;
-                        const color =
-                          payload.runningTotal >= 0 ? "#10B981" : "#EF4444";
-                        return (
-                          <circle
-                            cx={cx}
-                            cy={cy}
-                            r={7}
-                            fill={color}
-                            stroke="#FFFFFF"
-                            strokeWidth={2}
-                          />
-                        );
-                      }}
                     />
-                  </LineChart>
+                  </AreaChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-center text-gray-400 py-20">
