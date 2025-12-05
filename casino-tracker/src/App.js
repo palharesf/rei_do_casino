@@ -302,12 +302,24 @@ const chartData = (() => {
                         const day = date.getDate().toString().padStart(2, "0");
                         const month = (date.getMonth() + 1)
                           .toString()
-                          .padStart(2, "0")}-${date.toLocaleString("default", {
-                          month: "short",
-                        })}`;
+                          .padStart(2, "0");
+                        return `${day}/${month}`;
                       }}
                     />
-                    <YAxis stroke="#9CA3AF" tick={{ fill: "#9CA3AF" }} />
+                    <YAxis
+                      stroke="#9CA3AF"
+                      tick={{ fill: "#9CA3AF" }}
+                      tickFormatter={(value) => {
+                        if (value === 0) return "$0.00";
+
+                        // For large numbers, you can abbreviate
+                        if (Math.abs(value) >= 1000) {
+                          return `$${(value / 1000).toFixed(0)}k`;
+                        }
+
+                        return `$${value.toFixed(1)}`;
+                      }}
+                    />
 
                     <ReferenceLine
                       y={0}
