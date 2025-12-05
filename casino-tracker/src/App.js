@@ -335,7 +335,13 @@ const chartData = (() => {
                         borderRadius: "8px",
                         color: "#fff",
                       }}
-                      formatter={(value) => [`$${value.toFixed(2)}`, "Total"]}
+                      formatter={(value, name, props) => {
+                        // Only show tooltip for runningTotal
+                        if (props.dataKey === "runningTotal") {
+                          return [`$${value.toFixed(2)}`, "Total"];
+                        }
+                        return null; // Return null for other series
+                      }}
                       labelFormatter={(label) => `Date: ${label}`}
                     />
                     <Legend wrapperStyle={{ color: "#9CA3AF" }} />
