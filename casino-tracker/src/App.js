@@ -443,6 +443,30 @@ const chartData = (() => {
           </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="fixed bottom-0 left-0 w-full text-center p-3 bg-gray-900 text-gray-500 text-xs border-t border-gray-800 z-50">
+        <a
+          href="https://github.com/palharesf/"
+          className="text-blue-400 hover:text-blue-300 mx-1"
+        >
+          Built by @palharesf / fernandopa
+        </a>
+        •
+        <a
+          href="https://github.com/palharesf/rei_do_casino"
+          className="text-blue-400 hover:text-blue-300 mx-1"
+        >
+          Source Code on Github
+        </a>
+        •
+        <a
+          href="https://ko-fi.com/fernandopa"
+          className="text-blue-400 hover:text-blue-300 mx-1"
+        >
+          Buy me a coffee (Ko-Fi)
+        </a>
+      </footer>
     </div>
   );
 }
