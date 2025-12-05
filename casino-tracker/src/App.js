@@ -323,7 +323,7 @@ const chartData = (() => {
                         borderRadius: "8px",
                         color: "#fff",
                       }}
-                      formatter={(value) => `$${value.toFixed(2)}`}
+                      formatter={(value) => [`$${value.toFixed(2)}`, "Total"]}
                       labelFormatter={(label) => `Date: ${label}`}
                     />
                     <Legend wrapperStyle={{ color: "#9CA3AF" }} />
