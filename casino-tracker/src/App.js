@@ -10,6 +10,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  ReferenceLine,
 } from "recharts";
 import {
   collection,
@@ -301,6 +302,14 @@ const chartData = (() => {
                       }}
                     />
                     <YAxis stroke="#9CA3AF" tick={{ fill: "#9CA3AF" }} />
+
+                    <ReferenceLine
+                      y={0}
+                      stroke="#6B7280"
+                      strokeDasharray="5 5"
+                      strokeWidth={1}
+                    />
+
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "#1F2937",
