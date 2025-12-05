@@ -365,7 +365,7 @@ const chartData = (() => {
                       dot={(props) => {
                         const { cx, cy, payload } = props;
                         const color =
-                          payload.runningTotal >= 0 ? "#10B981" : "#EF4444";
+                          payload.amount >= 0 ? "#10B981" : "#EF4444";
                         return (
                           <circle
                             cx={cx}
