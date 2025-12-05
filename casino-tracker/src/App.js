@@ -194,7 +194,7 @@ const chartData = (() => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6">
+    <div className="min-h-screen bg-gray-900 text-white p-6 pb-16">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="sticky top-0 z-40 bg-gray-900 py-4 -mx-6 px-6 border-b border-gray-800 mb-8">
