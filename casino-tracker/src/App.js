@@ -299,8 +299,8 @@ const chartData = (() => {
                       tick={{ fill: "#9CA3AF" }}
                       tickFormatter={(value) => {
                         const date = new Date(value);
-                        return `${date
-                          .getDate()
+                        const day = date.getDate().toString().padStart(2, "0");
+                        const month = (date.getMonth() + 1)
                           .toString()
                           .padStart(2, "0")}-${date.toLocaleString("default", {
                           month: "short",
