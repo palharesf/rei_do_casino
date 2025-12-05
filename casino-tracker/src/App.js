@@ -197,16 +197,18 @@ const chartData = (() => {
     <div className="min-h-screen bg-gray-900 text-white p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">🎰 Casino Tracker</h1>
-          <div className="text-right">
-            <div className="text-sm text-gray-400">{user.email}</div>
-            <button
-              onClick={handleSignOut}
-              className="text-sm text-blue-400 hover:text-blue-300"
-            >
-              Sign out
-            </button>
+        <div className="sticky top-0 z-40 bg-gray-900 py-4 -mx-6 px-6 border-b border-gray-800 mb-8">
+          <div className="max-w-7xl mx-auto flex justify-between items-center">
+            <h1 className="text-4xl font-bold">🎰 Casino Tracker</h1>
+            <div className="text-right">
+              <div className="text-sm text-gray-400">{user.email}</div>
+              <button
+                onClick={handleSignOut}
+                className="text-sm text-blue-400 hover:text-blue-300"
+              >
+                Sign out
+              </button>
+            </div>
           </div>
         </div>
 
