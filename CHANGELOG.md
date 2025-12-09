@@ -26,6 +26,14 @@ The format aims to be simple and follow semantic versioning.
 
 ---
 
+## [1.0.4] - 2025-12-09
+### Added
+- Improved formatting for mobile responsiveness
+
+## [1.0.3] - 2025-12-05
+### Fixed
+- Improved chart rendering from line to area graph
+
 ## [1.0.1] - 2025-11-25
 ### Fixed
 - Fix Firebase auth persistence issue
@@ -40,7 +48,3 @@ The format aims to be simple and follow semantic versioning.
 
 ### Fixed
 - N/A
-
-[Unreleased]: https://github.com/palharesf/rei_do_casino/compare/v0.1.0...HEAD
-[1.0.0]: https://github.com/palharesf/rei_do_casino/releases/tag/v1.0.0
-[0.1.0]: https://github.com/palharesf/rei_do_casino/releases/tag/v0.1.0
