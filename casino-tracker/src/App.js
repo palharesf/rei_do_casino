@@ -38,7 +38,6 @@ export default function CasinoTracker() {
       setUser(currentUser);
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -73,7 +72,6 @@ export default function CasinoTracker() {
       await signInWithPopup(auth, googleProvider);
     } catch (error) {
       console.error("Sign in error:", error);
-
       if (error.code === "auth/web-storage-unsupported") {
         setError(
           "Your browser doesn't support authentication. Please try a different browser or enable cookies/storage."
@@ -169,23 +167,25 @@ const chartData = (() => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="text-white text-lg md:text-xl">Loading...</div>
       </div>
     );
   }
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-gray-900 flex items-center justify-center">
-        <div className="bg-gray-800 p-8 rounded-lg shadow-xl">
-          <h1 className="text-3xl font-bold text-white mb-4">Casino Tracker</h1>
-          <p className="text-gray-300 mb-6">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+        <div className="bg-gray-800 p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
+          <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">
+            Casino Tracker
+          </h1>
+          <p className="text-gray-300 mb-4 md:mb-6 text-sm md:text-base">
             Sign in to track your casino earnings
           </p>
           <button
             onClick={handleSignIn}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition touch-manipulation"
           >
             Sign in with Google
           </button>
@@ -198,55 +198,60 @@ const chartData = (() => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 pb-16">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="sticky top-0 z-40 bg-gray-900 py-4 -mx-6 px-6 border-b border-gray-800 mb-8">
-          <div className="max-w-7xl mx-auto flex justify-between items-center">
-            <h1 className="text-4xl font-bold">🎰 Casino Tracker</h1>
-            <div className="text-right">
-              <div className="text-sm text-gray-400">{user.email}</div>
-              <button
-                onClick={handleSignOut}
-                className="text-sm text-blue-400 hover:text-blue-300"
-              >
-                Sign out
-              </button>
+    <div className="min-h-screen bg-gray-900 text-white pb-20 md:pb-24">
+      {/* Header - responsive padding and text */}
+      <div className="sticky top-0 z-40 bg-gray-900 py-3 md:py-4 px-4 md:px-6 border-b border-gray-800 mb-4 md:mb-8">
+        <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
+          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
+            🎰 Casino Tracker
+          </h1>
+          <div className="text-right">
+            <div className="text-xs md:text-sm text-gray-400 truncate max-w-[120px] sm:max-w-none">
+              {user.email}
             </div>
+            <button
+              onClick={handleSignOut}
+              className="text-xs md:text-sm text-blue-400 hover:text-blue-300 touch-manipulation"
+            >
+              Sign out
+            </button>
           </div>
         </div>
+      </div>
 
-        <div className="grid grid-cols-3 gap-8">
-          {/* Left Column - Current Total and Input Form */}
-          <div className="col-span-1">
-            {/* Current Total */}
-            <div className="col-span-1">
-              <div className="bg-gray-800 rounded-lg p-6 mb-8 text-center">
-                <div className="text-gray-400 text-sm uppercase tracking-wide mb-2">
-                  Current Total
-                </div>
-                <div
-                  className={`text-5xl font-bold ${
-                    currentTotal >= 0 ? "text-green-400" : "text-red-400"
-                  }`}
-                >
-                  ${currentTotal.toFixed(2)}
-                </div>
+      <div className="px-4 md:px-6 max-w-7xl mx-auto">
+        {/* Mobile: Stack everything vertically, Desktop: 3-column grid */}
+        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
+          {/* Current Total - Full width on mobile, 1 col on desktop */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6 text-center">
+              <div className="text-gray-400 text-xs md:text-sm uppercase tracking-wide mb-1 md:mb-2">
+                Current Total
+              </div>
+              <div
+                className={`text-4xl md:text-5xl font-bold ${
+                  currentTotal >= 0 ? "text-green-400" : "text-red-400"
+                }`}
+              >
+                ${currentTotal.toFixed(2)}
               </div>
             </div>
+          </div>
 
-            {/* Input Form */}
-            <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
-              <h2 className="text-2xl font-bold mb-6">Add Entry</h2>
+          {/* Input Form - Full width on mobile, 1 col on desktop */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
+                Add Entry
+              </h2>
 
-              {/* Error message */}
               {error && (
-                <div className="mb-4 bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded">
+                <div className="mb-4 bg-red-500/20 border border-red-500 text-red-200 px-3 py-2 md:px-4 md:py-3 rounded text-sm">
                   {error}
                 </div>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-3 md:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
                     Date
@@ -255,7 +260,7 @@ const chartData = (() => {
                     type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                    className="w-full px-3 py-2 md:px-4 md:py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white text-sm md:text-base touch-manipulation"
                   />
                 </div>
                 <div>
@@ -267,8 +272,13 @@ const chartData = (() => {
                     step="0.01"
                     value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleSubmit(e);
+                      }
+                    }}
                     placeholder="Enter positive or negative"
-                    className="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
+                    className="w-full px-3 py-2 md:px-4 md:py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white text-sm md:text-base touch-manipulation"
                   />
                   <p className="text-xs text-gray-400 mt-1">
                     Use negative numbers for losses
@@ -276,7 +286,7 @@ const chartData = (() => {
                 </div>
                 <button
                   onClick={handleSubmit}
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition"
+                  className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 md:px-6 rounded-lg transition touch-manipulation"
                 >
                   Add Entry
                 </button>
@@ -284,19 +294,24 @@ const chartData = (() => {
             </div>
           </div>
 
-          {/* Right Column - Graph*/}
-          <div className="col-span-2">
-            {/* Graph */}
-            <div className="bg-gray-800 rounded-lg p-6 mb-8 shadow-xl h-full">
-              <h2 className="text-2xl font-bold mb-6">Earnings Over Time</h2>
+          {/* Graph - Full width on mobile, 2 cols on desktop */}
+          <div className="lg:col-span-1">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
+                Earnings Over Time
+              </h2>
               {chartData.length > 0 ? (
-                <ResponsiveContainer width="100%" height="90%">
+                <ResponsiveContainer
+                  width="100%"
+                  height={300}
+                  className="md:h-96"
+                >
                   <AreaChart data={chartData}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
                     <XAxis
                       dataKey="date"
                       stroke="#9CA3AF"
-                      tick={{ fill: "#9CA3AF" }}
+                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
                       tickFormatter={(value) => {
                         const date = new Date(value);
                         const day = date.getDate().toString().padStart(2, "0");
@@ -308,32 +323,29 @@ const chartData = (() => {
                     />
                     <YAxis
                       stroke="#9CA3AF"
-                      tick={{ fill: "#9CA3AF" }}
+                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
                       tickFormatter={(value) => {
-                        if (value === 0) return "$0.00";
-
+                        if (value === 0) return "$0";
                         // For large numbers, you can abbreviate
                         if (Math.abs(value) >= 1000) {
                           return `$${(value / 1000).toFixed(0)}k`;
                         }
-
-                        return `$${value.toFixed(1)}`;
+                        return `$${value.toFixed(0)}`;
                       }}
                     />
-
                     <ReferenceLine
                       y={0}
                       stroke="#6B7280"
                       strokeDasharray="5 5"
                       strokeWidth={1}
                     />
-
                     <Tooltip
                       contentStyle={{
                         backgroundColor: "#1F2937",
                         border: "1px solid #374151",
                         borderRadius: "8px",
                         color: "#fff",
+                        fontSize: "14px",
                       }}
                       formatter={(value, name, props) => {
                         // Only show tooltip for runningTotal
@@ -344,8 +356,9 @@ const chartData = (() => {
                       }}
                       labelFormatter={(label) => `Date: ${label}`}
                     />
-                    <Legend wrapperStyle={{ color: "#9CA3AF" }} />
-
+                    <Legend
+                      wrapperStyle={{ color: "#9CA3AF", fontSize: "12px" }}
+                    />
                     {/* Red area for negative values */}
                     <Area
                       type="monotone"
@@ -399,79 +412,85 @@ const chartData = (() => {
                   </AreaChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="text-center text-gray-400 py-20">
+                <div className="text-center text-gray-400 py-12 md:py-20 text-sm md:text-base">
                   No data yet. Add your first entry to see the graph!
                 </div>
               )}
             </div>
           </div>
 
-          {/* Across Columns - Historical Data Table */}
-          <div className="col-span-3">
-            <div className="bg-gray-800 rounded-lg p-6 shadow-xl">
-              <h2 className="text-2xl font-bold mb-6">History</h2>
+          {/* History Table - Full width across all columns */}
+          <div className="lg:col-span-3">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
+              <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
+                History
+              </h2>
               {entries.length > 0 ? (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="border-b border-gray-700">
-                        <th className="text-left py-3 px-4 text-gray-300">
-                          Date
-                        </th>
-                        <th className="text-right py-3 px-4 text-gray-300">
-                          Amount
-                        </th>
-                        <th className="text-right py-3 px-4 text-gray-300">
-                          Running Total
-                        </th>
-                        <th className="text-center py-3 px-4 text-gray-300">
-                          Action
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {chartData.map((entry, index) => {
-                        const originalEntry = entries[index];
-                        return (
-                          <tr
-                            key={originalEntry.id}
-                            className="border-b border-gray-700 hover:bg-gray-700"
-                          >
-                            <td className="py-3 px-4">{entry.date}</td>
-                            <td
-                              className={`text-right py-3 px-4 font-semibold ${
-                                entry.amount >= 0
-                                  ? "text-green-400"
-                                  : "text-red-400"
-                              }`}
+                <div className="overflow-x-auto -mx-4 md:mx-0">
+                  <div className="inline-block min-w-full align-middle">
+                    <table className="min-w-full">
+                      <thead>
+                        <tr className="border-b border-gray-700">
+                          <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
+                            Date
+                          </th>
+                          <th className="text-right py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
+                            Amount
+                          </th>
+                          <th className="text-right py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
+                            Total
+                          </th>
+                          <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
+                            Action
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {chartData.map((entry, index) => {
+                          const originalEntry = entries[index];
+                          return (
+                            <tr
+                              key={originalEntry.id}
+                              className="border-b border-gray-700 hover:bg-gray-700"
                             >
-                              ${entry.amount.toFixed(2)}
-                            </td>
-                            <td
-                              className={`text-right py-3 px-4 font-semibold ${
-                                entry.runningTotal >= 0
-                                  ? "text-green-400"
-                                  : "text-red-400"
-                              }`}
-                            >
-                              ${entry.runningTotal.toFixed(2)}
-                            </td>
-                            <td className="text-center py-3 px-4">
-                              <button
-                                onClick={() => handleDelete(originalEntry.id)}
-                                className="text-red-400 hover:text-red-300 text-sm"
+                              <td className="py-2 md:py-3 px-2 md:px-4 text-sm md:text-base">
+                                {entry.date}
+                              </td>
+                              <td
+                                className={`text-right py-2 md:py-3 px-2 md:px-4 font-semibold text-sm md:text-base ${
+                                  entry.amount >= 0
+                                    ? "text-green-400"
+                                    : "text-red-400"
+                                }`}
                               >
-                                Delete
-                              </button>
-                            </td>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
+                                ${entry.amount.toFixed(2)}
+                              </td>
+                              <td
+                                className={`text-right py-2 md:py-3 px-2 md:px-4 font-semibold text-sm md:text-base ${
+                                  entry.runningTotal >= 0
+                                    ? "text-green-400"
+                                    : "text-red-400"
+                                }`}
+                              >
+                                ${entry.runningTotal.toFixed(2)}
+                              </td>
+                              <td className="text-center py-2 md:py-3 px-2 md:px-4">
+                                <button
+                                  onClick={() => handleDelete(originalEntry.id)}
+                                  className="text-red-400 hover:text-red-300 text-xs md:text-sm touch-manipulation py-1 px-2"
+                                >
+                                  Delete
+                                </button>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               ) : (
-                <div className="text-center text-gray-400 py-10">
+                <div className="text-center text-gray-400 py-8 md:py-10 text-sm md:text-base">
                   No entries yet. Add your first casino visit!
                 </div>
               )}
@@ -480,28 +499,30 @@ const chartData = (() => {
         </div>
       </div>
 
-      {/* Footer */}
-      <footer className="fixed bottom-0 left-0 w-full text-center p-3 bg-gray-900 text-gray-500 text-xs border-t border-gray-800 z-50">
-        <a
-          href="https://github.com/palharesf/"
-          className="text-blue-400 hover:text-blue-300 mx-1"
-        >
-          Built by @palharesf / fernandopa
-        </a>
-        •
-        <a
-          href="https://github.com/palharesf/rei_do_casino"
-          className="text-blue-400 hover:text-blue-300 mx-1"
-        >
-          Source Code on Github
-        </a>
-        •
-        <a
-          href="https://ko-fi.com/fernandopa"
-          className="text-blue-400 hover:text-blue-300 mx-1"
-        >
-          Buy me a coffee (Ko-Fi)
-        </a>
+      {/* Footer - responsive text size */}
+      <footer className="fixed bottom-0 left-0 w-full text-center p-2 md:p-3 bg-gray-900 text-gray-500 text-xs border-t border-gray-800 z-50">
+        <div className="flex flex-wrap justify-center gap-1 md:gap-2 items-center">
+          <a
+            href="https://github.com/palharesf/"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Built by @palharesf
+          </a>
+          <span>•</span>
+          <a
+            href="https://github.com/palharesf/rei_do_casino"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Source Code
+          </a>
+          <span>•</span>
+          <a
+            href="https://ko-fi.com/fernandopa"
+            className="text-blue-400 hover:text-blue-300"
+          >
+            Buy me a coffee
+          </a>
+        </div>
       </footer>
     </div>
   );
