@@ -132,35 +132,35 @@ export default function CasinoTracker() {
   };
 
   // Calculate running total for graph
-const chartData = (() => {
-  // First, group entries by date and sum amounts
-  const dailyTotals = {};
+  const chartData = (() => {
+    // First, group entries by date and sum amounts
+    const dailyTotals = {};
 
-  entries.forEach((entry) => {
-    if (dailyTotals[entry.date]) {
-      dailyTotals[entry.date] += entry.amount;
-    } else {
-      dailyTotals[entry.date] = entry.amount;
-    }
-  });
+    entries.forEach((entry) => {
+      if (dailyTotals[entry.date]) {
+        dailyTotals[entry.date] += entry.amount;
+      } else {
+        dailyTotals[entry.date] = entry.amount;
+      }
+    });
 
-  // Convert to array and sort by date
-  const sortedDates = Object.keys(dailyTotals).sort();
+    // Convert to array and sort by date
+    const sortedDates = Object.keys(dailyTotals).sort();
 
-  // Calculate running totals
-  let runningTotal = 0;
-  return sortedDates.map((date) => {
-    runningTotal += dailyTotals[date];
-    return {
-      date,
-      amount: dailyTotals[date],
-      runningTotal,
-      // Add these for the area chart:
-      positiveArea: runningTotal > 0 ? runningTotal : 0,
-      negativeArea: runningTotal < 0 ? runningTotal : 0,
-    };
-  });
-})();
+    // Calculate running totals
+    let runningTotal = 0;
+    return sortedDates.map((date) => {
+      runningTotal += dailyTotals[date];
+      return {
+        date,
+        amount: dailyTotals[date],
+        runningTotal,
+        // Add these for the area chart:
+        positiveArea: runningTotal > 0 ? runningTotal : 0,
+        negativeArea: runningTotal < 0 ? runningTotal : 0,
+      };
+    });
+  })();
 
   const currentTotal =
     chartData.length > 0 ? chartData[chartData.length - 1].runningTotal : 0;
@@ -221,25 +221,24 @@ const chartData = (() => {
 
       <div className="px-4 md:px-6 max-w-7xl mx-auto">
         {/* Mobile: Stack everything vertically, Desktop: 3-column grid */}
-        <div className="flex flex-col lg:grid lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
-          {/* Current Total - Full width on mobile, 1 col on desktop */}
-          <div className="lg:col-span-1">
+        <div className="flex flex-col lg:grid lg:grid-cols-3 lg:grid-rows-1 gap-4 md:gap-6 lg:gap-8">
+          {/* Left Column: Current Total + Add Entry stacked - Full width on mobile, 1 col on desktop */}
+          <div className="lg:col-span-1 lg:row-span-1 flex flex-col gap-4 md:gap-6 lg:gap-8">
+            {/* Current Total */}
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 text-center">
               <div className="text-gray-400 text-xs md:text-sm uppercase tracking-wide mb-1 md:mb-2">
                 Current Total
               </div>
               <div
-                className={`text-4xl md:text-5xl font-bold ${
+                className={`text-3xl sm:text-4xl md:text-5xl font-bold ${
                   currentTotal >= 0 ? "text-green-400" : "text-red-400"
                 }`}
               >
                 ${currentTotal.toFixed(2)}
               </div>
             </div>
-          </div>
 
-          {/* Input Form - Full width on mobile, 1 col on desktop */}
-          <div className="lg:col-span-1">
+            {/* Input Form */}
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
                 Add Entry
@@ -294,128 +293,131 @@ const chartData = (() => {
             </div>
           </div>
 
-          {/* Graph - Full width on mobile, 2 cols on desktop */}
-          <div className="lg:col-span-1">
-            <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
+          {/* Right Column: Graph - Full width on mobile, 2 cols on desktop */}
+          <div className="lg:col-span-2 lg:row-span-1">
+            <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl h-full flex flex-col">
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
                 Earnings Over Time
               </h2>
-              {chartData.length > 0 ? (
-                <ResponsiveContainer
-                  width="100%"
-                  height={300}
-                  className="md:h-96"
-                >
-                  <AreaChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
-                    <XAxis
-                      dataKey="date"
-                      stroke="#9CA3AF"
-                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                      tickFormatter={(value) => {
-                        const date = new Date(value);
-                        const day = date.getDate().toString().padStart(2, "0");
-                        const month = (date.getMonth() + 1)
-                          .toString()
-                          .padStart(2, "0");
-                        return `${day}/${month}`;
-                      }}
-                    />
-                    <YAxis
-                      stroke="#9CA3AF"
-                      tick={{ fill: "#9CA3AF", fontSize: 12 }}
-                      tickFormatter={(value) => {
-                        if (value === 0) return "$0";
-                        // For large numbers, you can abbreviate
-                        if (Math.abs(value) >= 1000) {
-                          return `$${(value / 1000).toFixed(0)}k`;
-                        }
-                        return `$${value.toFixed(0)}`;
-                      }}
-                    />
-                    <ReferenceLine
-                      y={0}
-                      stroke="#6B7280"
-                      strokeDasharray="5 5"
-                      strokeWidth={1}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "#1F2937",
-                        border: "1px solid #374151",
-                        borderRadius: "8px",
-                        color: "#fff",
-                        fontSize: "14px",
-                      }}
-                      formatter={(value, name, props) => {
-                        // Only show tooltip for runningTotal
-                        if (props.dataKey === "runningTotal") {
-                          return [`$${value.toFixed(2)}`, "Total"];
-                        }
-                        return null; // Return null for other series
-                      }}
-                      labelFormatter={(label) => `Date: ${label}`}
-                    />
-                    <Legend
-                      wrapperStyle={{ color: "#9CA3AF", fontSize: "12px" }}
-                    />
-                    {/* Red area for negative values */}
-                    <Area
-                      type="monotone"
-                      dataKey="negativeArea" // We'll need to transform data
-                      stroke="#ef4444"
-                      fill="#ef4444"
-                      fillOpacity={0.6}
-                      strokeWidth={0}
-                      connectNulls={true}
-                      name="Below Zero"
-                      isAnimationActive={false}
-                    />
-
-                    {/* Green area for positive values */}
-                    <Area
-                      type="monotone"
-                      dataKey="positiveArea" // We'll need to transform data
-                      stroke="#10B981"
-                      fill="#10B981"
-                      fillOpacity={0.6}
-                      strokeWidth={0}
-                      connectNulls={true}
-                      name="Above Zero"
-                      isAnimationActive={false}
-                    />
-
-                    {/* Add a line on top to show the actual running total */}
-                    {/* For the dots, they are green if dailyTotal is positive, red if negative */}
-                    <Line
-                      type="monotone"
-                      dataKey="runningTotal"
-                      stroke="#3B82F6"
-                      strokeWidth={2}
-                      name="Running Total"
-                      dot={(props) => {
-                        const { cx, cy, payload } = props;
-                        const color =
-                          payload.amount >= 0 ? "#10B981" : "#EF4444";
-                        return (
-                          <circle
-                            cx={cx}
-                            cy={cy}
-                            r={4}
-                            fill={color}
-                            stroke={color}
-                            strokeWidth={2}
-                          />
-                        );
-                      }}
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="text-center text-gray-400 py-12 md:py-20 text-sm md:text-base">
-                  No data yet. Add your first entry to see the graph!
-                </div>
-              )}
+              <div className="flex-1 min-h-[300px]">
+                {chartData.length > 0 ? (
+                  <ResponsiveContainer
+                    width="100%"
+                    height="100%"
+                    minHeight={300}
+                  >
+                    <AreaChart data={chartData}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
+                      <XAxis
+                        dataKey="date"
+                        stroke="#9CA3AF"
+                        tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                        tickFormatter={(value) => {
+                          const date = new Date(value);
+                          const day = date
+                            .getDate()
+                            .toString()
+                            .padStart(2, "0");
+                          const month = (date.getMonth() + 1)
+                            .toString()
+                            .padStart(2, "0");
+                          return `${day}/${month}`;
+                        }}
+                      />
+                      <YAxis
+                        stroke="#9CA3AF"
+                        tick={{ fill: "#9CA3AF", fontSize: 12 }}
+                        tickFormatter={(value) => {
+                          if (value === 0) return "$0";
+                          // For large numbers, you can abbreviate
+                          if (Math.abs(value) >= 1000) {
+                            return `$${(value / 1000).toFixed(0)}k`;
+                          }
+                          return `$${value.toFixed(0)}`;
+                        }}
+                      />
+                      <ReferenceLine
+                        y={0}
+                        stroke="#6B7280"
+                        strokeDasharray="5 5"
+                        strokeWidth={1}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "#1F2937",
+                          border: "1px solid #374151",
+                          borderRadius: "8px",
+                          color: "#fff",
+                          fontSize: "14px",
+                        }}
+                        formatter={(value, name, props) => {
+                          // Only show tooltip for runningTotal
+                          if (props.dataKey === "runningTotal") {
+                            return [`$${value.toFixed(2)}`, "Total"];
+                          }
+                          return null;
+                        }}
+                        labelFormatter={(label) => `Date: ${label}`}
+                      />
+                      <Legend
+                        wrapperStyle={{ color: "#9CA3AF", fontSize: "12px" }}
+                      />
+                      {/* Red area for negative values */}
+                      <Area
+                        type="monotone"
+                        dataKey="negativeArea" // We'll need to transform data
+                        stroke="#ef4444"
+                        fill="#ef4444"
+                        fillOpacity={0.6}
+                        strokeWidth={0}
+                        connectNulls={true}
+                        name="Below Zero"
+                        isAnimationActive={false}
+                      />
+                      {/* Green area for positive values */}
+                      <Area
+                        type="monotone"
+                        dataKey="positiveArea" // We'll need to transform data
+                        stroke="#10B981"
+                        fill="#10B981"
+                        fillOpacity={0.6}
+                        strokeWidth={0}
+                        connectNulls={true}
+                        name="Above Zero"
+                        isAnimationActive={false}
+                      />
+                      {/* Add a line on top to show the actual running total */}
+                      {/* For the dots, they are green if dailyTotal is positive, red if negative */}
+                      <Line
+                        type="monotone"
+                        dataKey="runningTotal"
+                        stroke="#3B82F6"
+                        strokeWidth={2}
+                        name="Running Total"
+                        dot={(props) => {
+                          const { cx, cy, payload } = props;
+                          const color =
+                            payload.amount >= 0 ? "#10B981" : "#EF4444";
+                          return (
+                            <circle
+                              cx={cx}
+                              cy={cy}
+                              r={4}
+                              fill={color}
+                              stroke={color}
+                              strokeWidth={2}
+                            />
+                          );
+                        }}
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="text-center text-gray-400 py-12 md:py-20 text-sm md:text-base">
+                    No data yet. Add your first entry to see the graph!
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
