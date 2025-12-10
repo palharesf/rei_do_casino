@@ -23,6 +23,7 @@ import {
   onSnapshot,
   orderBy,
 } from "firebase/firestore";
+import { useLanguage } from "./LanguageContext";
 
 export default function CasinoTracker() {
   const [entries, setEntries] = useState([]);
@@ -31,6 +32,9 @@ export default function CasinoTracker() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // Get translation function and language toggle
+  const { t, language, toggleLanguage } = useLanguage();
 
   // Initialize Firebase authentication listener
   useEffect(() => {
@@ -73,11 +77,9 @@ export default function CasinoTracker() {
     } catch (error) {
       console.error("Sign in error:", error);
       if (error.code === "auth/web-storage-unsupported") {
-        setError(
-          "Your browser doesn't support authentication. Please try a different browser or enable cookies/storage."
-        );
+        setError(t("errorWebStorage"));
       } else {
-        setError("Failed to sign in. Please try again.");
+        setError(t("errorSignIn"));
       }
     }
   };
@@ -97,12 +99,12 @@ export default function CasinoTracker() {
     setError("");
 
     if (!amount || isNaN(amount)) {
-      setError("Please enter a valid amount");
+      setError(t("errorInvalidAmount"));
       return;
     }
 
     if (!date) {
-      setError("Please select a valid date");
+      setError(t("errorInvalidDate"));
       return;
     }
 
@@ -117,7 +119,7 @@ export default function CasinoTracker() {
       setAmount(""); // Clear input
     } catch (error) {
       console.error("Error adding entry:", error);
-      setError("Failed to add entry. Please try again.");
+      setError(t("errorAddEntry"));
     }
   };
 
@@ -127,7 +129,7 @@ export default function CasinoTracker() {
       await deleteDoc(doc(db, "entries", id));
     } catch (error) {
       console.error("Error deleting entry:", error);
-      setError("Failed to delete entry. Please try again.");
+      setError(t("errorDeleteEntry"));
     }
   };
 
@@ -168,7 +170,7 @@ export default function CasinoTracker() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
-        <div className="text-white text-lg md:text-xl">Loading...</div>
+        <div className="text-white text-lg md:text-xl">{t("loading")}</div>
       </div>
     );
   }
@@ -177,17 +179,27 @@ export default function CasinoTracker() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
         <div className="bg-gray-800 p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
+          {/* Language toggle on sign-in page */}
+          <div className="flex justify-end mb-4">
+            <button
+              onClick={toggleLanguage}
+              className="text-sm text-blue-400 hover:text-blue-300 transition"
+            >
+              {language === "en" ? "🇺🇸 EN" : "🇧🇷 PT"}
+            </button>
+          </div>
+
           <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">
-            Casino Tracker
+            {t("signInTitle")}
           </h1>
           <p className="text-gray-300 mb-4 md:mb-6 text-sm md:text-base">
-            Sign in to track your casino earnings
+            {t("signInSubtitle")}
           </p>
           <button
             onClick={handleSignIn}
             className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition touch-manipulation"
           >
-            Sign in with Google
+            {t("signInButton")}
           </button>
           {error && (
             <p className="text-red-400 text-sm mt-4 text-center">{error}</p>
@@ -199,22 +211,35 @@ export default function CasinoTracker() {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20 md:pb-24">
-      {/* Header - responsive padding and text */}
+      {/* Header with language toggle */}
       <div className="sticky top-0 z-40 bg-gray-900 py-3 md:py-4 px-4 md:px-6 border-b border-gray-800 mb-4 md:mb-8">
         <div className="max-w-7xl mx-auto flex justify-between items-center gap-2">
           <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold">
-            🎰 Casino Tracker
+            🎰 {t("appTitle")}
           </h1>
-          <div className="text-right">
-            <div className="text-xs md:text-sm text-gray-400 truncate max-w-[120px] sm:max-w-none">
-              {user.email}
-            </div>
+          <div className="flex items-center gap-3 md:gap-4">
+            {/* Language toggle button */}
             <button
-              onClick={handleSignOut}
-              className="text-xs md:text-sm text-blue-400 hover:text-blue-300 touch-manipulation"
+              onClick={toggleLanguage}
+              className="text-sm md:text-base text-blue-400 hover:text-blue-300 transition touch-manipulation"
+              title={
+                language === "en" ? "Switch to Portuguese" : "Mudar para Inglês"
+              }
             >
-              Sign out
+              {language === "en" ? "🇧🇷 PT" : "🇺🇸 EN"}
             </button>
+
+            <div className="text-right">
+              <div className="text-xs md:text-sm text-gray-400 truncate max-w-[120px] sm:max-w-none">
+                {user.email}
+              </div>
+              <button
+                onClick={handleSignOut}
+                className="text-xs md:text-sm text-blue-400 hover:text-blue-300 touch-manipulation"
+              >
+                {t("signOut")}
+              </button>
+            </div>
           </div>
         </div>
       </div>
@@ -227,7 +252,7 @@ export default function CasinoTracker() {
             {/* Current Total */}
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 text-center">
               <div className="text-gray-400 text-xs md:text-sm uppercase tracking-wide mb-1 md:mb-2">
-                Current Total
+                {t("currentTotal")}
               </div>
               <div
                 className={`text-3xl sm:text-4xl md:text-5xl font-bold ${
@@ -238,10 +263,10 @@ export default function CasinoTracker() {
               </div>
             </div>
 
-            {/* Input Form */}
+            {/* Add Entry Form */}
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
-                Add Entry
+                {t("addEntryTitle")}
               </h2>
 
               {error && (
@@ -253,7 +278,7 @@ export default function CasinoTracker() {
               <div className="space-y-3 md:space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Date
+                    {t("dateLabel")}
                   </label>
                   <input
                     type="date"
@@ -264,7 +289,7 @@ export default function CasinoTracker() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Amount ($)
+                    {t("amountLabel")}
                   </label>
                   <input
                     type="number"
@@ -276,18 +301,18 @@ export default function CasinoTracker() {
                         handleSubmit(e);
                       }
                     }}
-                    placeholder="Enter positive or negative"
+                    placeholder={t("amountPlaceholder")}
                     className="w-full px-3 py-2 md:px-4 md:py-2 bg-gray-700 border border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-white text-sm md:text-base touch-manipulation"
                   />
                   <p className="text-xs text-gray-400 mt-1">
-                    Use negative numbers for losses
+                    {t("amountHint")}
                   </p>
                 </div>
                 <button
                   onClick={handleSubmit}
                   className="w-full bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-semibold py-3 px-4 md:px-6 rounded-lg transition touch-manipulation"
                 >
-                  Add Entry
+                  {t("addEntryButton")}
                 </button>
               </div>
             </div>
@@ -297,9 +322,9 @@ export default function CasinoTracker() {
           <div className="lg:col-span-2 lg:row-span-1">
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl h-full flex flex-col">
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
-                Earnings Over Time
+                {t("chartTitle")}
               </h2>
-              <div className="flex-1 min-h-[300px]">
+              <div className="w-full h-[300px] lg:flex-1 lg:h-auto">
                 {chartData.length > 0 ? (
                   <ResponsiveContainer
                     width="100%"
@@ -353,11 +378,13 @@ export default function CasinoTracker() {
                         formatter={(value, name, props) => {
                           // Only show tooltip for runningTotal
                           if (props.dataKey === "runningTotal") {
-                            return [`$${value.toFixed(2)}`, "Total"];
+                            return [`$${value.toFixed(2)}`, t("tooltipTotal")];
                           }
                           return null;
                         }}
-                        labelFormatter={(label) => `Date: ${label}`}
+                        labelFormatter={(label) =>
+                          `${t("tooltipDate")}: ${label}`
+                        }
                       />
                       <Legend
                         wrapperStyle={{ color: "#9CA3AF", fontSize: "12px" }}
@@ -371,7 +398,7 @@ export default function CasinoTracker() {
                         fillOpacity={0.6}
                         strokeWidth={0}
                         connectNulls={true}
-                        name="Below Zero"
+                        name={t("legendBelowZero")}
                         isAnimationActive={false}
                       />
                       {/* Green area for positive values */}
@@ -383,7 +410,7 @@ export default function CasinoTracker() {
                         fillOpacity={0.6}
                         strokeWidth={0}
                         connectNulls={true}
-                        name="Above Zero"
+                        name={t("legendAboveZero")}
                         isAnimationActive={false}
                       />
                       {/* Add a line on top to show the actual running total */}
@@ -393,7 +420,7 @@ export default function CasinoTracker() {
                         dataKey="runningTotal"
                         stroke="#3B82F6"
                         strokeWidth={2}
-                        name="Running Total"
+                        name={t("legendRunningTotal")}
                         dot={(props) => {
                           const { cx, cy, payload } = props;
                           const color =
@@ -414,7 +441,7 @@ export default function CasinoTracker() {
                   </ResponsiveContainer>
                 ) : (
                   <div className="text-center text-gray-400 py-12 md:py-20 text-sm md:text-base">
-                    No data yet. Add your first entry to see the graph!
+                    {t("chartNoData")}
                   </div>
                 )}
               </div>
@@ -425,7 +452,7 @@ export default function CasinoTracker() {
           <div className="lg:col-span-3">
             <div className="bg-gray-800 rounded-lg p-4 md:p-6 shadow-xl">
               <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6">
-                History
+                {t("historyTitle")}
               </h2>
               {entries.length > 0 ? (
                 <div className="overflow-x-auto -mx-4 md:mx-0">
@@ -434,16 +461,16 @@ export default function CasinoTracker() {
                       <thead>
                         <tr className="border-b border-gray-700">
                           <th className="text-left py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
-                            Date
+                            {t("tableDate")}
                           </th>
                           <th className="text-right py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
-                            Amount
+                            {t("tableAmount")}
                           </th>
                           <th className="text-right py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
-                            Total
+                            {t("tableTotal")}
                           </th>
                           <th className="text-center py-2 md:py-3 px-2 md:px-4 text-gray-300 text-sm md:text-base">
-                            Action
+                            {t("tableAction")}
                           </th>
                         </tr>
                       </thead>
@@ -481,7 +508,7 @@ export default function CasinoTracker() {
                                   onClick={() => handleDelete(originalEntry.id)}
                                   className="text-red-400 hover:text-red-300 text-xs md:text-sm touch-manipulation py-1 px-2"
                                 >
-                                  Delete
+                                  {t("deleteButton")}
                                 </button>
                               </td>
                             </tr>
@@ -493,7 +520,7 @@ export default function CasinoTracker() {
                 </div>
               ) : (
                 <div className="text-center text-gray-400 py-8 md:py-10 text-sm md:text-base">
-                  No entries yet. Add your first casino visit!
+                  {t("historyNoData")}
                 </div>
               )}
             </div>
@@ -508,21 +535,21 @@ export default function CasinoTracker() {
             href="https://github.com/palharesf/"
             className="text-blue-400 hover:text-blue-300"
           >
-            Built by @palharesf
+            {t("footerBuiltBy")}
           </a>
           <span>•</span>
           <a
             href="https://github.com/palharesf/rei_do_casino"
             className="text-blue-400 hover:text-blue-300"
           >
-            Source Code
+            {t("footerSourceCode")}
           </a>
           <span>•</span>
           <a
             href="https://ko-fi.com/fernandopa"
             className="text-blue-400 hover:text-blue-300"
           >
-            Buy me a coffee
+            {t("footerCoffee")}
           </a>
         </div>
       </footer>
