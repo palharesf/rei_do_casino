@@ -1,3 +1,2 @@
-- Localization options
 - Adjust axis for better visibility
 - Add tests

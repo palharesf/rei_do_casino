@@ -26,6 +26,10 @@ The format aims to be simple and follow semantic versioning.
 
 ---
 
+## [1.0.6] - 2025-12-10
+### Added
+- Added support for Portuguese language
+
 ## [1.0.5] - 2025-12-09
 ### Fixed
 - Adjusted rendering for desktop (previous grid had 3 content columns with different heights, new grid has 1 column with stacked Total + Add Entry and 2 columns for Chart, all of same height)
