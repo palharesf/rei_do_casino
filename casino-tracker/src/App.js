@@ -179,19 +179,21 @@ export default function CasinoTracker() {
     return (
       <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
         <div className="bg-gray-800 p-6 md:p-8 rounded-lg shadow-xl w-full max-w-md">
-          {/* Language toggle on sign-in page */}
-          <div className="flex justify-end mb-4">
+          {/* Title and Language toggle on same row */}
+          <div className="flex items-center justify-between mb-3 md:mb-4">
+            <h1 className="text-2xl md:text-3xl font-bold text-white">
+              {t("signInTitle")}
+            </h1>
             <button
               onClick={toggleLanguage}
-              className="text-sm text-blue-400 hover:text-blue-300 transition"
+              className="text-sm text-blue-400 hover:text-blue-300 transition touch-manipulation ml-4"
+              title={
+                language === "en" ? "Switch to Portuguese" : "Mudar para Inglês"
+              }
             >
               {language === "en" ? "🇺🇸 EN" : "🇧🇷 PT"}
             </button>
           </div>
-
-          <h1 className="text-2xl md:text-3xl font-bold text-white mb-3 md:mb-4">
-            {t("signInTitle")}
-          </h1>
           <p className="text-gray-300 mb-4 md:mb-6 text-sm md:text-base">
             {t("signInSubtitle")}
           </p>
@@ -218,21 +220,23 @@ export default function CasinoTracker() {
             🎰 {t("appTitle")}
           </h1>
           <div className="flex items-center gap-3 md:gap-4">
-            {/* Language toggle button */}
-            <button
-              onClick={toggleLanguage}
-              className="text-sm md:text-base text-blue-400 hover:text-blue-300 transition touch-manipulation"
-              title={
-                language === "en" ? "Switch to Portuguese" : "Mudar para Inglês"
-              }
-            >
-              {language === "en" ? "🇧🇷 PT" : "🇺🇸 EN"}
-            </button>
-
             <div className="text-right">
               <div className="text-xs md:text-sm text-gray-400 truncate max-w-[120px] sm:max-w-none">
                 {user.email}
               </div>
+              {/* Language toggle button */}
+              <button
+                onClick={toggleLanguage}
+                className="text-xs md:text-sm text-blue-400 hover:text-blue-300 transition touch-manipulation"
+                title={
+                  language === "en"
+                    ? "Switch to Portuguese"
+                    : "Mudar para Inglês"
+                }
+              >
+                {language === "en" ? "🇺🇸 EN" : "🇧🇷 PT"}
+              </button>
+              <span> • </span>
               <button
                 onClick={handleSignOut}
                 className="text-xs md:text-sm text-blue-400 hover:text-blue-300 touch-manipulation"
